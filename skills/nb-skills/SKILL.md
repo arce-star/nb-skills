@@ -78,7 +78,13 @@ When the user asks what skills a repository needs, inspect the current codebase 
 node scripts/nb-skills.mjs project .
 ```
 
-Use the generated search intents as starting points, then run `recommend` for the most relevant ones. Prefer a small skill stack that covers distinct needs over many overlapping skills.
+Resolve those intents automatically:
+
+```bash
+node scripts/nb-skills.mjs stack .
+```
+
+For a one-command repository recommendation, run `node scripts/nb-skills.mjs stack .`. It resolves detected intents into searched, audited, ranked winners. Prefer a small skill stack that covers distinct needs over many overlapping skills.
 
 ## Installation
 

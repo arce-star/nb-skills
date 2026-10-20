@@ -16,6 +16,7 @@ Usage:
   nb-skills audit <owner/repo@skill> [--json]
   nb-skills compare <owner/repo@skill> <owner/repo@skill> [...] [--json]
   nb-skills project [path] [--json]
+  nb-skills stack [path] [--per-query N] [--json]
   nb-skills install <owner/repo[@skill]> [--agent NAME] [--global] [--yes]
   nb-skills doctor
 
@@ -24,28 +25,20 @@ Examples:
   nb-skills recommend "review pull requests for security"
   nb-skills audit vercel-labs/agent-skills@web-design-guidelines
   nb-skills project .
+  nb-skills stack .
 `;
 
 try {
-  if (!command || ['help', '--help', '-h'].includes(command)) {
-    console.log(HELP.trim());
-  } else if (command === 'search') {
-    await runSearch(args);
-  } else if (command === 'recommend') {
-    await runRecommend(args);
-  } else if (command === 'audit') {
-    await runAudit(args);
-  } else if (command === 'compare') {
-    await runCompare(args);
-  } else if (command === 'project') {
-    runProject(args);
-  } else if (command === 'install') {
-    runInstall(args);
-  } else if (command === 'doctor') {
-    runDoctor();
-  } else {
-    throw new Error(`Unknown command: ${command}\n\n${HELP.trim()}`);
-  }
+  if (!command || ['help', '--help', '-h'].includes(command)) console.log(HELP.trim());
+  else if (command === 'search') await runSearch(args);
+  else if (command === 'recommend') await runRecommend(args);
+  else if (command === 'audit') await runAudit(args);
+  else if (command === 'compare') await runCompare(args);
+  else if (command === 'project') runProject(args);
+  else if (command === 'stack') await runStack(args);
+  else if (command === 'install') runInstall(args);
+  else if (command === 'doctor') runDoctor();
+  else throw new Error(`Unknown command: ${command}\n\n${HELP.trim()}`);
 } catch (error) {
   console.error(`nb-skills: ${error.message}`);
   process.exitCode = 1;
@@ -77,7 +70,6 @@ async function runSearch(args) {
   const json = args.includes('--json');
   const result = await searchSkills(query, { limit, owner, enrich: true });
   if (json) return printJson(result);
-
   console.log(`Search: ${result.query}`);
   console.log(`Backend: ${result.backend}\n`);
   if (!result.skills.length) return console.log('No matching skills found.');
@@ -90,21 +82,12 @@ async function runSearch(args) {
   });
 }
 
-async function runRecommend(args) {
-  const query = positional(args, ['--limit']).join(' ');
-  const limit = Math.max(1, Math.min(Number(option(args, '--limit', 5)), 8));
-  const json = args.includes('--json');
+async function rankQuery(query, limit = 5) {
   const result = await searchSkills(query, { limit, enrich: true });
   const ranked = [];
-
   for (const candidate of result.skills) {
     let audit = null;
-    try {
-      const audited = await auditRemote(`${candidate.source}@${candidate.name}`);
-      audit = audited.audit;
-    } catch {
-      // Search results can be stale or use non-standard paths; ranking gracefully degrades.
-    }
+    try { audit = (await auditRemote(`${candidate.source}@${candidate.name}`)).audit; } catch {}
     const score = scoreCandidate({
       query,
       candidate: { ...candidate, description: candidate.repo_description || candidate.description },
@@ -113,9 +96,15 @@ async function runRecommend(args) {
     });
     ranked.push({ ...candidate, score, audit });
   }
-
   ranked.sort((a, b) => b.score.total - a.score.total);
-  if (json) return printJson({ query, backend: result.backend, results: ranked });
+  return { backend: result.backend, ranked };
+}
+
+async function runRecommend(args) {
+  const query = positional(args, ['--limit']).join(' ');
+  const limit = Math.max(1, Math.min(Number(option(args, '--limit', 5)), 8));
+  const { backend, ranked } = await rankQuery(query, limit);
+  if (args.includes('--json')) return printJson({ query, backend, results: ranked });
   console.log(`Best skills for: ${query}\n`);
   ranked.forEach((item, i) => {
     console.log(`${i + 1}. ${item.source}@${item.name} — ${item.score.total}/100`);
@@ -136,12 +125,7 @@ async function runAudit(args) {
   console.log(`Quality: ${audit.qualityScore}/100`);
   console.log(`Files scanned: ${audit.filesScanned}`);
   if (!audit.findings.length) console.log('Findings: none detected by static heuristics.');
-  else {
-    console.log('Findings:');
-    for (const finding of audit.findings) {
-      console.log(`- [${finding.severity}] ${finding.rule} in ${finding.path}: ${finding.message}`);
-    }
-  }
+  else for (const finding of audit.findings) console.log(`- [${finding.severity}] ${finding.rule} in ${finding.path}: ${finding.message}`);
   console.log(`\n${audit.note}`);
 }
 
@@ -153,16 +137,11 @@ async function runCompare(args) {
     try {
       const { skill, audit } = await auditRemote(ref);
       rows.push({ ref, path: skill.path, security: audit.securityScore, quality: audit.qualityScore, risk: audit.risk, findings: audit.findings.length });
-    } catch (error) {
-      rows.push({ ref, error: error.message });
-    }
+    } catch (error) { rows.push({ ref, error: error.message }); }
   }
   if (args.includes('--json')) return printJson(rows);
   console.log('Skill comparison\n');
-  for (const row of rows) {
-    if (row.error) console.log(`${row.ref}: ERROR — ${row.error}`);
-    else console.log(`${row.ref}: security ${row.security}/100 · quality ${row.quality}/100 · risk ${row.risk} · findings ${row.findings}`);
-  }
+  for (const row of rows) console.log(row.error ? `${row.ref}: ERROR — ${row.error}` : `${row.ref}: security ${row.security}/100 · quality ${row.quality}/100 · risk ${row.risk} · findings ${row.findings}`);
 }
 
 function runProject(args) {
@@ -172,7 +151,31 @@ function runProject(args) {
   console.log(`Project: ${result.root}\n`);
   console.log('Suggested skill searches:');
   result.queries.forEach((item, i) => console.log(`${i + 1}. ${item.query} — ${item.reason}`));
-  console.log('\nRun: nb-skills recommend "<query>"');
+  console.log('\nRun: nb-skills stack .');
+}
+
+async function runStack(args) {
+  const root = positional(args, ['--per-query'])[0] || '.';
+  const perQuery = Math.max(1, Math.min(Number(option(args, '--per-query', 3)), 5));
+  const project = detectProject(root);
+  const recommendations = [];
+  for (const intent of project.queries.slice(0, 6)) {
+    const { backend, ranked } = await rankQuery(intent.query, perQuery);
+    recommendations.push({ intent, backend, winner: ranked[0] || null, alternatives: ranked.slice(1, 3) });
+  }
+  const output = { project, recommendations };
+  if (args.includes('--json')) return printJson(output);
+  console.log(`Skill stack for: ${project.root}\n`);
+  for (const item of recommendations) {
+    console.log(item.intent.reason);
+    if (!item.winner) { console.log(`  No candidate found for: ${item.intent.query}\n`); continue; }
+    const w = item.winner;
+    const risk = w.audit ? ` · risk ${w.audit.risk}` : '';
+    console.log(`  → ${w.source}@${w.name} — ${w.score.total}/100${risk}`);
+    console.log(`    npx skills add ${w.source}@${w.name}`);
+    if (item.alternatives.length) console.log(`    alternatives: ${item.alternatives.map((x) => `${x.source}@${x.name}`).join(', ')}`);
+    console.log('');
+  }
 }
 
 function runInstall(args) {
@@ -190,15 +193,7 @@ function runInstall(args) {
 
 function runDoctor() {
   const npx = spawnSync('npx', ['--version'], { encoding: 'utf8', shell: process.platform === 'win32' });
-  const info = {
-    node: process.version,
-    npx: npx.status === 0 ? npx.stdout.trim() : 'not found',
-    githubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN),
-    skillsApi: process.env.SKILLS_API_URL || 'https://skills.sh',
-  };
-  printJson(info);
+  printJson({ node: process.version, npx: npx.status === 0 ? npx.stdout.trim() : 'not found', githubToken: Boolean(process.env.GITHUB_TOKEN || process.env.GH_TOKEN), skillsApi: process.env.SKILLS_API_URL || 'https://skills.sh' });
 }
 
-function printJson(value) {
-  console.log(JSON.stringify(value, null, 2));
-}
+function printJson(value) { console.log(JSON.stringify(value, null, 2)); }

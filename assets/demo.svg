@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="470" viewBox="0 0 920 470">
+<rect width="920" height="470" rx="16" fill="#0d1117"/>
+<rect width="920" height="48" rx="16" fill="#1c2128"/>
+<rect y="32" width="920" height="16" fill="#1c2128"/>
+<circle cx="24" cy="24" r="7" fill="#ff5f56"/><circle cx="48" cy="24" r="7" fill="#ffbd2e"/><circle cx="72" cy="24" r="7" fill="#27c93f"/>
+<text x="390" y="30" fill="#8b949e" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16">nb-skills — terminal</text>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">
+<text x="28" y="84" fill="#e6edf3" font-weight="700">$ nb-skills stack .</text>
+<text x="28" y="124" fill="#8b949e">Scanning repository...</text>
+<text x="28" y="158" fill="#58a6ff">Detected  Next.js · TypeScript · Playwright · GitHub Actions</text>
+<text x="28" y="204" fill="#e6edf3">Next.js detected</text>
+<text x="52" y="236" fill="#3fb950">→ react-performance      94/100   risk LOW</text>
+<text x="52" y="266" fill="#8b949e">Search ✓   Inspect ✓   Audit ✓   Rank ✓</text>
+<text x="28" y="310" fill="#e6edf3">Playwright detected</text>
+<text x="52" y="342" fill="#3fb950">→ browser-testing        91/100   risk LOW</text>
+<text x="28" y="386" fill="#e6edf3">GitHub Actions detected</text>
+<text x="52" y="418" fill="#3fb950">→ ci-workflows           88/100   risk LOW</text>
+<text x="28" y="452" fill="#d29922">3 winners ready to install.</text>
+</g>
+</svg>

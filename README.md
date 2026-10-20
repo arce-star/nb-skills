@@ -1,27 +1,61 @@
 # nb-skills
 
-> Find the skill. Read the skill. Audit the skill. Then install it.
+<p align="center">
+  <strong>Stop hunting for Agent Skills by hand.</strong><br/>
+  Find, inspect, audit, rank, compare, and install the right skill for the job.
+</p>
 
-**nb-skills** is a meta-skill and CLI for discovering, evaluating, comparing, auditing, and installing Agent Skills.
+<p align="center">
+  <a href="https://github.com/arce-star/nb-skills/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/arce-star/nb-skills/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Node 20+" src="https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white">
+  <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue">
+  <img alt="zero runtime dependencies" src="https://img.shields.io/badge/runtime%20dependencies-0-success">
+</p>
 
-Instead of returning a pile of keyword matches, nb-skills tries to answer the useful question:
+<p align="center">
+  <img src="assets/demo.svg" alt="nb-skills terminal demo" width="920">
+</p>
 
-> **Which skill is the best fit for this task, and should I trust it enough to install it?**
+## One command, a ranked skill stack
+
+Point `nb-skills` at a repository:
+
+```bash
+nb-skills stack .
+```
+
+It detects the project, turns the stack into search intents, inspects candidate `SKILL.md` files, runs static security checks, ranks the candidates, and returns a small install-ready shortlist.
+
+```text
+Skill stack for: ./my-next-app
+
+Next.js detected
+  → owner/repo@react-performance — 94/100 · risk low
+    npx skills add owner/repo@react-performance
+
+Playwright detected
+  → owner/repo@browser-testing — 91/100 · risk low
+    npx skills add owner/repo@browser-testing
+
+GitHub Actions detected
+  → owner/repo@ci-workflows — 88/100 · risk low
+    npx skills add owner/repo@ci-workflows
+```
 
 ## Why nb-skills?
 
-`npx skills find` is already good at basic discovery. nb-skills is designed for the step after that:
+Finding a skill is easy. Deciding **which one fits, whether it is maintained, and whether you should trust it enough to install** is the hard part.
 
 | Capability | Basic finder | nb-skills |
 | --- | ---: | ---: |
 | Search skills | Yes | Yes |
-| Intent-oriented queries | Manual | Yes |
+| Understand task intent | Manual | Yes |
 | Inspect `SKILL.md` | Manual | Yes |
 | Static security audit | No | Yes |
-| Quality scoring | No | Yes |
-| Relevance ranking | Basic | Yes |
+| Quality + relevance ranking | No | Yes |
 | Compare alternatives | Manual | Yes |
-| Project-aware discovery | No | Yes |
+| Detect skills for a codebase | No | Yes |
+| Produce a ranked skill stack | No | Yes |
 | Install through `skills` CLI | Yes | Yes |
 
 ## Quick start
@@ -32,90 +66,68 @@ Instead of returning a pile of keyword matches, nb-skills tries to answer the us
 npx skills add arce-star/nb-skills --skill nb-skills
 ```
 
-Then ask your agent things like:
+Then ask your agent:
 
 ```text
 Find the best skill for reviewing React performance.
 Audit this skill before I install it.
-What skills would help this repository?
-Compare these three skills and pick one.
+Compare these candidates and pick one.
+Find the best skill stack for this repository.
 ```
 
 ### Use the CLI
 
-Clone the repository and run directly with Node.js 20+:
-
 ```bash
-node skills/nb-skills/scripts/nb-skills.mjs search "react performance"
+git clone https://github.com/arce-star/nb-skills.git
+cd nb-skills
+npm install
+
 node skills/nb-skills/scripts/nb-skills.mjs recommend "review pull requests for security"
-node skills/nb-skills/scripts/nb-skills.mjs audit vercel-labs/agent-skills@web-design-guidelines
+node skills/nb-skills/scripts/nb-skills.mjs audit owner/repo@skill
+node skills/nb-skills/scripts/nb-skills.mjs stack .
 ```
 
-After npm publication, the intended interface is:
+After npm publication, the intended interface is simply:
 
 ```bash
-npx nb-skills search "react performance"
+npx nb-skills stack .
 ```
 
 ## Commands
 
-### Search
-
-```bash
-nb-skills search "typescript testing"
-nb-skills search "react" --owner vercel
-nb-skills search "database" --json
+```text
+nb-skills search <query>                 Search candidate skills
+nb-skills recommend <query>              Search + inspect + audit + rank
+nb-skills audit <owner/repo@skill>       Static security and quality audit
+nb-skills compare <skill> <skill> ...    Compare audited candidates
+nb-skills project [path]                  Detect project → search intents
+nb-skills stack [path]                    Detect → search → audit → rank winners
+nb-skills install <owner/repo@skill>      Delegate installation to skills CLI
+nb-skills doctor                          Check local runtime
 ```
 
-### Recommend
+## The ranking model
 
-Search, inspect available candidates, and rank them:
+A recommendation is scored out of 100:
 
-```bash
-nb-skills recommend "review pull requests for security"
-```
+- **Relevance — 40**
+- **Quality — 20**
+- **Trust / security — 15**
+- **Popularity — 10**
+- **Freshness — 10**
+- **Compatibility — 5**
 
-The 100-point score weights:
+Popularity is deliberately not the objective: a huge skill that poorly matches your task should lose to a smaller, better-fit skill.
 
-- relevance — 40
-- quality — 20
-- trust/security — 15
-- popularity — 10
-- freshness — 10
-- compatibility — 5
-
-### Audit
+## Security before install
 
 ```bash
 nb-skills audit owner/repo@skill
 ```
 
-The static auditor looks for signals such as destructive shell commands, `curl | bash`, secret access, SSH credential access, encoded payloads, process execution, network access, and prompt-injection language.
+The static auditor looks for destructive shell commands, `curl | bash`, secret and SSH credential access, encoded payloads, process execution, network access, and prompt-injection-like instructions.
 
-**Audit results are heuristic, not a security certification.**
-
-### Compare
-
-```bash
-nb-skills compare owner/repo@skill-a other/repo@skill-b
-```
-
-### Project-aware discovery
-
-```bash
-cd your-project
-nb-skills project .
-```
-
-nb-skills detects common project markers such as React, Next.js, TypeScript, Playwright, Python, FastAPI, PyTorch, Docker, Rust, Go, Terraform, and GitHub Actions, then suggests targeted skill searches.
-
-### Install
-
-```bash
-nb-skills install owner/repo@skill
-```
-
-Installation delegates to the `skills` CLI rather than inventing another installer.
+> A clean audit is **not** a security certification. It is a transparent heuristic designed to surface risks before installation.
 
 ## How it works
 
@@ -179,12 +191,11 @@ The installable skill lives under `skills/nb-skills/` rather than at repository 
 
 ## Status
 
-`v0.1.0` is an MVP. The ranking and audit rules are intentionally transparent so they can be challenged and improved.
+`v0.2.0` adds repository-aware skill-stack discovery. The ranking and audit rules are intentionally transparent so they can be challenged and improved.
 
 Planned directions:
 
 - deeper multi-source discovery;
-- repository-level skill stack recommendations;
 - richer compatibility detection;
 - transitive script/reference inspection;
 - cached search and audit results;

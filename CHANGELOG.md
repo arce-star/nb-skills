@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 — 2026-10-20
+
+- add `nb-skills stack .` for repository-aware end-to-end skill recommendations;
+- detect project intents, search candidates, audit them, rank them, and select winners in one command;
+- redesign the README around a 10-second product demo and clear value proposition;
+- add terminal demo asset and updated quick-start flow.
+
 ## 0.1.0 — 2026-10-20
 
 Initial public MVP:
