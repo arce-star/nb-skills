@@ -1,0 +1,41 @@
+{
+  "name": "nbskills",
+  "version": "0.1.0",
+  "description": "Find, rank, audit, compare, and install Agent Skills.",
+  "type": "module",
+  "bin": {
+    "nbskills": "./skills/nbskills/scripts/nbskills.mjs"
+  },
+  "files": [
+    "skills/nbskills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "validate": "node ./skills/nbskills/scripts/validate.mjs ./skills/nbskills",
+    "check": "npm run validate && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "ai-agent",
+    "claude-code",
+    "codex",
+    "cursor",
+    "skill-discovery",
+    "security-audit"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arce-star/nbskills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arce-star/nbskills/issues"
+  },
+  "homepage": "https://github.com/arce-star/nbskills#readme"
+}
