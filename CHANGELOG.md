@@ -4,7 +4,7 @@
 
 Initial public MVP:
 
-- Agent Skill under `skills/nbskills/`;
+- Agent Skill under `skills/nb-skills/`;
 - skills.sh discovery with GitHub fallback;
 - relevance/quality/trust/popularity/freshness/compatibility ranking;
 - static security audit;

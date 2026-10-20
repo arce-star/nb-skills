@@ -6,7 +6,7 @@ import {
   relevanceScore,
   scoreCandidate,
   popularityScore,
-} from '../skills/nbskills/scripts/core.mjs';
+} from '../skills/nb-skills/scripts/core.mjs';
 
 test('parseFrontmatter reads folded description', () => {
   const input = `---\nname: demo\ndescription: >\n  Find useful things\n  for agents.\n---\n# Demo\n`;

@@ -1,6 +1,6 @@
 # Ranking model
 
-nbskills ranks for usefulness, not popularity alone.
+nb-skills ranks for usefulness, not popularity alone.
 
 ## Default score
 

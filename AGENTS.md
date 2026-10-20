@@ -2,11 +2,11 @@
 
 ## Project purpose
 
-nbskills is a meta-skill and CLI for finding, evaluating, auditing, comparing, and installing Agent Skills.
+nb-skills is a meta-skill and CLI for finding, evaluating, auditing, comparing, and installing Agent Skills.
 
 ## Development rules
 
-- Keep the installable skill self-contained under `skills/nbskills/`.
+- Keep the installable skill self-contained under `skills/nb-skills/`.
 - Do not move `SKILL.md` to the repository root.
 - Keep runtime dependencies at zero unless a dependency clearly improves reliability enough to justify the supply-chain cost.
 - Ranking changes need tests.

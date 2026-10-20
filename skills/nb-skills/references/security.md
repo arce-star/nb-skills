@@ -1,6 +1,6 @@
 # Security model
 
-nbskills performs static heuristic review before recommending or installing an unfamiliar skill.
+nb-skills performs static heuristic review before recommending or installing an unfamiliar skill.
 
 ## Threat model
 

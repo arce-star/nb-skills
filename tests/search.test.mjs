@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { searchSkills } from '../skills/nbskills/scripts/search.mjs';
+import { searchSkills } from '../skills/nb-skills/scripts/search.mjs';
 
 test('searchSkills normalizes skills.sh results', async () => {
   const oldFetch = globalThis.fetch;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { auditTexts } from '../skills/nbskills/scripts/audit.mjs';
+import { auditTexts } from '../skills/nb-skills/scripts/audit.mjs';
 
 const safeSkill = `---\nname: safe-skill\ndescription: A safe example skill with a clear workflow for testing.\n---\n# Safe\n## Workflow\n1. Read the input.\n2. Produce a result.\n## Examples\nExample here.\n## Edge cases\nHandle missing input.\n`;
 

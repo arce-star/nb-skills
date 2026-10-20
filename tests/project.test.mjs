@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { detectProject } from '../skills/nbskills/scripts/core.mjs';
+import { detectProject } from '../skills/nb-skills/scripts/core.mjs';
 
 test('detectProject finds Next.js, TypeScript and Playwright', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nbskills-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nb-skills-'));
   fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
     dependencies: { next: '^15', react: '^19' },
     devDependencies: { typescript: '^5', '@playwright/test': '^1' },

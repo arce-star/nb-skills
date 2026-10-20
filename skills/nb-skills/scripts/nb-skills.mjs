@@ -8,22 +8,22 @@ const args = process.argv.slice(2);
 const command = args.shift();
 
 const HELP = `
-nbskills — find, rank, audit, compare, and install Agent Skills
+nb-skills — find, rank, audit, compare, and install Agent Skills
 
 Usage:
-  nbskills search <query> [--limit N] [--owner OWNER] [--json]
-  nbskills recommend <query> [--limit N] [--json]
-  nbskills audit <owner/repo@skill> [--json]
-  nbskills compare <owner/repo@skill> <owner/repo@skill> [...] [--json]
-  nbskills project [path] [--json]
-  nbskills install <owner/repo[@skill]> [--agent NAME] [--global] [--yes]
-  nbskills doctor
+  nb-skills search <query> [--limit N] [--owner OWNER] [--json]
+  nb-skills recommend <query> [--limit N] [--json]
+  nb-skills audit <owner/repo@skill> [--json]
+  nb-skills compare <owner/repo@skill> <owner/repo@skill> [...] [--json]
+  nb-skills project [path] [--json]
+  nb-skills install <owner/repo[@skill]> [--agent NAME] [--global] [--yes]
+  nb-skills doctor
 
 Examples:
-  nbskills search "react performance"
-  nbskills recommend "review pull requests for security"
-  nbskills audit vercel-labs/agent-skills@web-design-guidelines
-  nbskills project .
+  nb-skills search "react performance"
+  nb-skills recommend "review pull requests for security"
+  nb-skills audit vercel-labs/agent-skills@web-design-guidelines
+  nb-skills project .
 `;
 
 try {
@@ -47,7 +47,7 @@ try {
     throw new Error(`Unknown command: ${command}\n\n${HELP.trim()}`);
   }
 } catch (error) {
-  console.error(`nbskills: ${error.message}`);
+  console.error(`nb-skills: ${error.message}`);
   process.exitCode = 1;
 }
 
@@ -172,7 +172,7 @@ function runProject(args) {
   console.log(`Project: ${result.root}\n`);
   console.log('Suggested skill searches:');
   result.queries.forEach((item, i) => console.log(`${i + 1}. ${item.query} — ${item.reason}`));
-  console.log('\nRun: nbskills recommend "<query>"');
+  console.log('\nRun: nb-skills recommend "<query>"');
 }
 
 function runInstall(args) {

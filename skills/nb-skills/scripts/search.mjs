@@ -16,7 +16,7 @@ export async function searchSkills(query, { limit = 10, owner = null, enrich = t
     const timer = setTimeout(() => controller.abort(), 10_000);
     try {
       const res = await fetch(`${SEARCH_BASE}/api/search?${params}`, {
-        headers: { Accept: 'application/json', 'User-Agent': 'nbskills/0.1' },
+        headers: { Accept: 'application/json', 'User-Agent': 'nb-skills/0.1' },
         signal: controller.signal,
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -5,7 +5,7 @@ const API = 'https://api.github.com';
 function headers() {
   const out = {
     Accept: 'application/vnd.github+json',
-    'User-Agent': 'nbskills/0.1',
+    'User-Agent': 'nb-skills/0.1',
     'X-GitHub-Api-Version': '2022-11-28',
   };
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
@@ -58,7 +58,7 @@ export async function getTextFile(owner, repo, filePath, ref = null) {
   if (Array.isArray(item) || item.type !== 'file') throw new Error(`${filePath} is not a file`);
   if (item.encoding === 'base64' && item.content) return Buffer.from(item.content.replace(/\n/g, ''), 'base64').toString('utf8');
   if (item.download_url) {
-    const res = await fetch(item.download_url, { headers: { 'User-Agent': 'nbskills/0.1' } });
+    const res = await fetch(item.download_url, { headers: { 'User-Agent': 'nb-skills/0.1' } });
     if (!res.ok) throw new Error(`Unable to download ${filePath}: HTTP ${res.status}`);
     return await res.text();
   }

@@ -1,6 +1,6 @@
 # Security policy
 
-nbskills analyzes third-party Agent Skills and may fetch public repository content. Treat remote skills as untrusted input.
+nb-skills analyzes third-party Agent Skills and may fetch public repository content. Treat remote skills as untrusted input.
 
 ## Reporting a vulnerability
 

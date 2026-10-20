@@ -1,6 +1,6 @@
-# Contributing to nbskills
+# Contributing to nb-skills
 
-Thanks for improving nbskills.
+Thanks for improving nb-skills.
 
 ## Development
 

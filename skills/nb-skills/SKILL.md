@@ -1,21 +1,21 @@
 ---
-name: nbskills
+name: nb-skills
 description: >
   Discover, evaluate, compare, audit, and install Agent Skills. Use this skill when the user asks to find a skill for a task, discover new agent capabilities, compare alternatives, audit a skill before installation, or recommend skills for the current codebase.
 license: MIT
 compatibility: Requires Node.js 20+ for bundled scripts and network access for remote discovery. GitHub tokens are optional but improve API rate limits.
 ---
 
-# nbskills
+# nb-skills
 
-Use nbskills as a meta-skill: it finds and evaluates other Agent Skills instead of solving their domain task itself.
+Use nb-skills as a meta-skill: it finds and evaluates other Agent Skills instead of solving their domain task itself.
 
 ## Core workflow
 
 1. Understand the user's actual task, not just their literal keywords.
 2. Expand the task into one to three concise search queries when useful.
-3. Search candidates with `scripts/nbskills.mjs search "<query>"`.
-4. For important recommendations, inspect and statically audit the strongest candidates with `scripts/nbskills.mjs audit <owner/repo@skill>`.
+3. Search candidates with `scripts/nb-skills.mjs search "<query>"`.
+4. For important recommendations, inspect and statically audit the strongest candidates with `scripts/nb-skills.mjs audit <owner/repo@skill>`.
 5. Rank candidates by task relevance first, then quality, trust, popularity, freshness, and compatibility.
 6. Recommend a small shortlist, normally three candidates. Explain why the first choice wins and mention meaningful tradeoffs.
 7. Install only when the user explicitly asks to install or clearly approves installation.
@@ -25,13 +25,13 @@ Use nbskills as a meta-skill: it finds and evaluates other Agent Skills instead 
 Run:
 
 ```bash
-node scripts/nbskills.mjs search "react performance"
+node scripts/nb-skills.mjs search "react performance"
 ```
 
 For structured output:
 
 ```bash
-node scripts/nbskills.mjs search "react performance" --json
+node scripts/nb-skills.mjs search "react performance" --json
 ```
 
 Search currently uses the skills.sh search endpoint when available and degrades to GitHub repository discovery when it is unavailable. Treat search results as candidates, not proof of quality.
@@ -41,7 +41,7 @@ Search currently uses the skills.sh search endpoint when available and degrades 
 Use full recommendation mode when the user asks for the best skill rather than just a list:
 
 ```bash
-node scripts/nbskills.mjs recommend "review pull requests for security"
+node scripts/nb-skills.mjs recommend "review pull requests for security"
 ```
 
 This mode attempts to inspect top candidates before scoring them. If a candidate cannot be inspected, say that confidence is lower rather than inventing audit results.
@@ -53,7 +53,7 @@ Read [references/ranking.md](references/ranking.md) when explaining scores or ch
 Run:
 
 ```bash
-node scripts/nbskills.mjs audit owner/repo@skill
+node scripts/nb-skills.mjs audit owner/repo@skill
 ```
 
 The audit is heuristic static analysis. It can identify suspicious shell execution, destructive commands, secret access, prompt-injection language, remote downloads, and similar signals. It cannot prove that a skill is safe.
@@ -65,7 +65,7 @@ Read [references/security.md](references/security.md) for the threat model and i
 Run:
 
 ```bash
-node scripts/nbskills.mjs compare owner/repo@skill-a other/repo@skill-b
+node scripts/nb-skills.mjs compare owner/repo@skill-a other/repo@skill-b
 ```
 
 Do not choose solely by stars or install count. A lower-popularity skill can be the better recommendation when it matches the user's task more precisely or has a cleaner trust profile.
@@ -75,7 +75,7 @@ Do not choose solely by stars or install count. A lower-popularity skill can be 
 When the user asks what skills a repository needs, inspect the current codebase first:
 
 ```bash
-node scripts/nbskills.mjs project .
+node scripts/nb-skills.mjs project .
 ```
 
 Use the generated search intents as starting points, then run `recommend` for the most relevant ones. Prefer a small skill stack that covers distinct needs over many overlapping skills.
@@ -85,7 +85,7 @@ Use the generated search intents as starting points, then run `recommend` for th
 When installation is approved, prefer the ecosystem installer:
 
 ```bash
-node scripts/nbskills.mjs install owner/repo@skill
+node scripts/nb-skills.mjs install owner/repo@skill
 ```
 
 or directly:

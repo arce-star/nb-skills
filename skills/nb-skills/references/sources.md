@@ -6,7 +6,7 @@ The primary discovery backend mirrors the endpoint used by the `skills` CLI:
 
 `GET https://skills.sh/api/search?q=<query>&limit=<n>`
 
-As of October 2026, this endpoint is used by the public `npx skills find` implementation but is not documented as a stable public API contract. nbskills therefore treats it as experimental and must degrade gracefully if it changes or becomes unavailable.
+As of October 2026, this endpoint is used by the public `npx skills find` implementation but is not documented as a stable public API contract. nb-skills therefore treats it as experimental and must degrade gracefully if it changes or becomes unavailable.
 
 Expected fields include:
 
@@ -17,7 +17,7 @@ Expected fields include:
 
 ## GitHub fallback
 
-If the skills.sh search endpoint fails, nbskills searches GitHub repositories for the task terms plus Agent Skills context. This fallback has lower recall because repository search is not equivalent to a skill-level index.
+If the skills.sh search endpoint fails, nb-skills searches GitHub repositories for the task terms plus Agent Skills context. This fallback has lower recall because repository search is not equivalent to a skill-level index.
 
 GitHub unauthenticated API limits are low. Set `GITHUB_TOKEN` or `GH_TOKEN` when making many requests.
 

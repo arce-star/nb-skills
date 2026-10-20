@@ -22,7 +22,7 @@ else {
 }
 
 if (errors.length) {
-  console.error('nbskills validation failed:\n- ' + errors.join('\n- '));
+  console.error('nb-skills validation failed:\n- ' + errors.join('\n- '));
   process.exit(1);
 }
-console.log('nbskills skill validation passed.');
+console.log('nb-skills skill validation passed.');

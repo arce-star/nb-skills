@@ -1,18 +1,18 @@
-# nbskills
+# nb-skills
 
 > Find the skill. Read the skill. Audit the skill. Then install it.
 
-**nbskills** is a meta-skill and CLI for discovering, evaluating, comparing, auditing, and installing Agent Skills.
+**nb-skills** is a meta-skill and CLI for discovering, evaluating, comparing, auditing, and installing Agent Skills.
 
-Instead of returning a pile of keyword matches, nbskills tries to answer the useful question:
+Instead of returning a pile of keyword matches, nb-skills tries to answer the useful question:
 
 > **Which skill is the best fit for this task, and should I trust it enough to install it?**
 
-## Why nbskills?
+## Why nb-skills?
 
-`npx skills find` is already good at basic discovery. nbskills is designed for the step after that:
+`npx skills find` is already good at basic discovery. nb-skills is designed for the step after that:
 
-| Capability | Basic finder | nbskills |
+| Capability | Basic finder | nb-skills |
 | --- | ---: | ---: |
 | Search skills | Yes | Yes |
 | Intent-oriented queries | Manual | Yes |
@@ -29,7 +29,7 @@ Instead of returning a pile of keyword matches, nbskills tries to answer the use
 ### Install as an Agent Skill
 
 ```bash
-npx skills add arce-star/nbskills --skill nbskills
+npx skills add arce-star/nb-skills --skill nb-skills
 ```
 
 Then ask your agent things like:
@@ -46,15 +46,15 @@ Compare these three skills and pick one.
 Clone the repository and run directly with Node.js 20+:
 
 ```bash
-node skills/nbskills/scripts/nbskills.mjs search "react performance"
-node skills/nbskills/scripts/nbskills.mjs recommend "review pull requests for security"
-node skills/nbskills/scripts/nbskills.mjs audit vercel-labs/agent-skills@web-design-guidelines
+node skills/nb-skills/scripts/nb-skills.mjs search "react performance"
+node skills/nb-skills/scripts/nb-skills.mjs recommend "review pull requests for security"
+node skills/nb-skills/scripts/nb-skills.mjs audit vercel-labs/agent-skills@web-design-guidelines
 ```
 
 After npm publication, the intended interface is:
 
 ```bash
-npx nbskills search "react performance"
+npx nb-skills search "react performance"
 ```
 
 ## Commands
@@ -62,9 +62,9 @@ npx nbskills search "react performance"
 ### Search
 
 ```bash
-nbskills search "typescript testing"
-nbskills search "react" --owner vercel
-nbskills search "database" --json
+nb-skills search "typescript testing"
+nb-skills search "react" --owner vercel
+nb-skills search "database" --json
 ```
 
 ### Recommend
@@ -72,7 +72,7 @@ nbskills search "database" --json
 Search, inspect available candidates, and rank them:
 
 ```bash
-nbskills recommend "review pull requests for security"
+nb-skills recommend "review pull requests for security"
 ```
 
 The 100-point score weights:
@@ -87,7 +87,7 @@ The 100-point score weights:
 ### Audit
 
 ```bash
-nbskills audit owner/repo@skill
+nb-skills audit owner/repo@skill
 ```
 
 The static auditor looks for signals such as destructive shell commands, `curl | bash`, secret access, SSH credential access, encoded payloads, process execution, network access, and prompt-injection language.
@@ -97,22 +97,22 @@ The static auditor looks for signals such as destructive shell commands, `curl |
 ### Compare
 
 ```bash
-nbskills compare owner/repo@skill-a other/repo@skill-b
+nb-skills compare owner/repo@skill-a other/repo@skill-b
 ```
 
 ### Project-aware discovery
 
 ```bash
 cd your-project
-nbskills project .
+nb-skills project .
 ```
 
-nbskills detects common project markers such as React, Next.js, TypeScript, Playwright, Python, FastAPI, PyTorch, Docker, Rust, Go, Terraform, and GitHub Actions, then suggests targeted skill searches.
+nb-skills detects common project markers such as React, Next.js, TypeScript, Playwright, Python, FastAPI, PyTorch, Docker, Rust, Go, Terraform, and GitHub Actions, then suggests targeted skill searches.
 
 ### Install
 
 ```bash
-nbskills install owner/repo@skill
+nb-skills install owner/repo@skill
 ```
 
 Installation delegates to the `skills` CLI rather than inventing another installer.
@@ -139,21 +139,21 @@ User-approved install
 
 ## Discovery backends
 
-nbskills first uses the same skills.sh search endpoint used by the public `skills` CLI. That endpoint is currently an undocumented interface, so nbskills treats it as experimental and falls back to GitHub repository search when necessary.
+nb-skills first uses the same skills.sh search endpoint used by the public `skills` CLI. That endpoint is currently an undocumented interface, so nb-skills treats it as experimental and falls back to GitHub repository search when necessary.
 
-Set `GITHUB_TOKEN` or `GH_TOKEN` for better GitHub API rate limits. Tokens are never required by nbskills itself for public repositories.
+Set `GITHUB_TOKEN` or `GH_TOKEN` for better GitHub API rate limits. Tokens are never required by nb-skills itself for public repositories.
 
 ## Repository layout
 
 ```text
-nbskills/
+nb-skills/
 ├── README.md
 ├── package.json
 ├── skills/
-│   └── nbskills/
+│   └── nb-skills/
 │       ├── SKILL.md
 │       ├── scripts/
-│       │   ├── nbskills.mjs
+│       │   ├── nb-skills.mjs
 │       │   ├── search.mjs
 │       │   ├── audit.mjs
 │       │   ├── github.mjs
@@ -166,7 +166,7 @@ nbskills/
 └── tests/
 ```
 
-The installable skill lives under `skills/nbskills/` rather than at repository root, so skill installers can copy the skill itself without treating the whole development repository as skill payload.
+The installable skill lives under `skills/nb-skills/` rather than at repository root, so skill installers can copy the skill itself without treating the whole development repository as skill payload.
 
 ## Design principles
 
@@ -199,4 +199,4 @@ Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 MIT
 
-> Note: the `install` command delegates to the upstream `skills` CLI and therefore inherits whatever Node.js runtime requirement the current `skills` release has. Search, ranking, project detection, and static audit are implemented by nbskills itself.
+> Note: the `install` command delegates to the upstream `skills` CLI and therefore inherits whatever Node.js runtime requirement the current `skills` release has. Search, ranking, project detection, and static audit are implemented by nb-skills itself.
