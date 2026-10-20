@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — 2026-10-20
+
+- add a provider adapter layer for multi-source Agent Skill discovery;
+- search skills.sh, SkillsMP, and ClawHub in parallel by default;
+- normalize and deduplicate GitHub-backed skills across registries while preserving provider provenance;
+- isolate provider failures so one registry outage or rate limit does not break discovery;
+- add `--providers` and `NBSKILLS_PROVIDERS` controls;
+- preserve honest trust semantics for registry-only ClawHub results that do not expose a GitHub source;
+- keep GitHub repository search as a last-resort fallback when structured registries return no usable results.
+
 ## 0.2.0 — 2026-10-20
 
 - add `nb-skills stack .` for repository-aware end-to-end skill recommendations;
